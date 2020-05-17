@@ -208,3 +208,6 @@ ext/sqlite3/tests/phpsql*
 !ext/fileinfo/libmagic.patch
 !ext/mbstring/oniguruma.patch
 !ext/pcre/pcre2lib/config.h
+
+#idea
+/.idea
