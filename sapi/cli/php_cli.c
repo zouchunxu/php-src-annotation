@@ -417,6 +417,7 @@ static void sapi_cli_send_header(sapi_header_struct *sapi_header, void *server_c
 
 static int php_cli_startup(sapi_module_struct *sapi_module) /* {{{ */
 {
+    // 初始化模块
 	if (php_module_startup(sapi_module, NULL, 0)==FAILURE) {
 		return FAILURE;
 	}
@@ -647,6 +648,7 @@ BOOL WINAPI php_cli_win32_ctrl_handler(DWORD sig)
 #endif
 /*}}}*/
 
+// cli 主要处理逻辑
 static int do_cli(int argc, char **argv) /* {{{ */
 {
 	int c;
@@ -994,6 +996,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 			if (interactive && cli_shell_callbacks.cli_shell_run) {
 				exit_status = cli_shell_callbacks.cli_shell_run();
 			} else {
+			    // 执行php脚本
 				php_execute_script(&file_handle);
 				exit_status = EG(exit_status);
 			}
@@ -1161,6 +1164,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 
 out:
 	if (request_started) {
+	    // 请求关闭
 		php_request_shutdown((void *) 0);
 	}
 	if (translated_path) {
@@ -1178,6 +1182,7 @@ err:
 }
 /* }}} */
 
+// cli入口函数
 /* {{{ main
  */
 #ifdef PHP_CLI_WIN32_NO_CONSOLE
@@ -1265,6 +1270,7 @@ int main(int argc, char *argv[])
 	setmode(_fileno(stderr), O_BINARY);		/* make the stdio mode be binary */
 #endif
 
+    // 读取用户传入参数
 	while ((c = php_getopt(argc, argv, OPTIONS, &php_optarg, &php_optind, 0, 2))!=-1) {
 		switch (c) {
 			case 'c':

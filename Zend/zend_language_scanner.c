@@ -586,6 +586,7 @@ static zend_op_array *zend_compile(int type)
 	CG(ast) = NULL;
 	CG(ast_arena) = zend_arena_create(1024 * 32);
 
+	// yacc不断调用re2c扫描token生成抽象语法树 zendparse函数逻辑Zend/zend_compile.c:zendlex()
 	if (!zendparse()) {
 		int last_lineno = CG(zend_lineno);
 		zend_file_context original_file_context;
@@ -602,6 +603,7 @@ static zend_op_array *zend_compile(int type)
 
 		zend_file_context_begin(&original_file_context);
 		zend_oparray_context_begin(&original_oparray_context);
+		// 从抽象语法书生成opcode
 		zend_compile_top_stmt(CG(ast));
 		CG(zend_lineno) = last_lineno;
 		zend_emit_final_return(type == ZEND_USER_FUNCTION);
@@ -636,6 +638,7 @@ ZEND_API zend_op_array *compile_file(zend_file_handle *file_handle, int type)
 			zend_message_dispatcher(ZMSG_FAILED_INCLUDE_FOPEN, file_handle->filename);
 		}
 	} else {
+	    // 编译
 		op_array = zend_compile(ZEND_USER_FUNCTION);
 	}
 

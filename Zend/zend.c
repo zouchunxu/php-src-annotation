@@ -1545,6 +1545,7 @@ ZEND_API void zend_try_exception_handler() /* {{{ */
 	}
 } /* }}} */
 
+// 真实执行php脚本的函数
 ZEND_API int zend_execute_scripts(int type, zval *retval, int file_count, ...) /* {{{ */
 {
 	va_list files;
@@ -1559,12 +1560,14 @@ ZEND_API int zend_execute_scripts(int type, zval *retval, int file_count, ...) /
 			continue;
 		}
 
+		// 把php代码编译成opcode 函数逻辑：Zend/zend_language_scanner.c:compile_file
 		op_array = zend_compile_file(file_handle, type);
 		if (file_handle->opened_path) {
 			zend_hash_add_empty_element(&EG(included_files), file_handle->opened_path);
 		}
 		zend_destroy_file_handle(file_handle);
 		if (op_array) {
+		    // 执行opcode
 			zend_execute(op_array, retval);
 			zend_exception_restore();
 			zend_try_exception_handler();

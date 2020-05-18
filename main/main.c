@@ -2151,6 +2151,8 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	module_shutdown = 0;
 	module_startup = 1;
 	sapi_initialize_empty_request();
+
+	// 激活sapi，初始化请求信息SG(request_info),设置读取POST请求到handler等
 	sapi_activate();
 
 	if (module_initialized) {
@@ -2159,6 +2161,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 
 	sapi_module = *sf;
 
+	// 启动php输出
 	php_output_startup();
 
 #ifdef ZTS
@@ -2170,6 +2173,8 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	memset(&core_globals, 0, sizeof(core_globals));
 	php_startup_ticks();
 #endif
+
+	// 初始化垃圾回收器,分配zend_gc_globals内存
 	gc_globals_ctor();
 
 	zuf.error_function = php_error_cb;
@@ -2185,6 +2190,8 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	zuf.printf_to_smart_str_function = php_printf_to_smart_str;
 	zuf.getenv_function = sapi_getenv;
 	zuf.resolve_path_function = php_resolve_path_for_zend;
+
+	// 启动zend引擎
 	zend_startup(&zuf, NULL);
 
 #if HAVE_SETLOCALE
@@ -2206,6 +2213,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 
 	le_index_ptr = zend_register_list_destructors_ex(NULL, NULL, "index pointer", 0);
 
+    // 注册php常量
 	/* Register constants */
 	REGISTER_MAIN_STRINGL_CONSTANT("PHP_VERSION", PHP_VERSION, sizeof(PHP_VERSION)-1, CONST_PERSISTENT | CONST_CS);
 	REGISTER_MAIN_LONG_CONSTANT("PHP_MAJOR_VERSION", PHP_MAJOR_VERSION, CONST_PERSISTENT | CONST_CS);
@@ -2263,6 +2271,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	REGISTER_MAIN_LONG_CONSTANT("PHP_WINDOWS_NT_WORKSTATION", VER_NT_WORKSTATION, CONST_PERSISTENT | CONST_CS);
 #endif
 
+	// 查找php解释器目录
 	php_binary_init();
 	if (PG(php_binary)) {
 		REGISTER_MAIN_STRINGL_CONSTANT("PHP_BINARY", PG(php_binary), strlen(PG(php_binary)), CONST_PERSISTENT | CONST_CS | CONST_NO_FILE_CACHE);
@@ -2273,6 +2282,8 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	php_output_register_constants();
 	php_rfc1867_register_constants();
 
+
+	// 读取php.ini配置到EG(ini_directives)
 	/* this will read in php.ini, set up the configuration parameters,
 	   load zend extensions and register php function extensions
 	   to be loaded later */
@@ -2318,17 +2329,21 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	zuv.html_errors = 1;
 	zuv.import_use_extension = ".php";
 	zuv.import_use_extension_length = (uint32_t)strlen(zuv.import_use_extension);
+	// 注册 _GET _POST _COOKIE _ENV _REQUEST  全局变量的处理handle到CG(globals)
 	php_startup_auto_globals();
 	zend_set_utility_values(&zuv);
 	php_startup_sapi_content_types();
 
-	/* startup extensions statically compiled in */
-	if (php_register_internal_extensions_func() == FAILURE) {
-		php_printf("Unable to start builtin modules\n");
-		return FAILURE;
-	}
 
-	/* start additional PHP extensions */
+	// 注册内部核心扩展 date,hash,libxml,standard等等
+    /* startup extensions statically compiled in */
+    if (php_register_internal_extensions_func() == FAILURE) {
+        php_printf("Unable to start builtin modules\n");
+        return FAILURE;
+    }
+
+    // 注册静态编译等php扩展
+    /* start additional PHP extensions */
 	php_register_extensions_bc(additional_modules, num_additional_modules);
 
 	/* load and startup extensions compiled as shared objects (aka DLLs)
@@ -2338,9 +2353,14 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	   which is always an internal extension and to be initialized
 	   ahead of all other internals
 	 */
+	// 注册动态加载等php扩展，主要原理是通过dlopen加载扩展
 	php_ini_register_extensions();
+
+
+	// 调用已加载php扩展到PHP_MINT
 	zend_startup_modules();
 
+	// 调用zend扩展的startup
 	/* start Zend extensions */
 	zend_startup_extensions();
 
@@ -2355,6 +2375,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 		}
 	}
 
+	// 处理php.ini中禁用等函数
 	/* disable certain classes and functions as requested by php.ini */
 	php_disable_functions();
 	php_disable_classes();
