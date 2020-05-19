@@ -449,23 +449,32 @@ static sapi_module_struct cli_sapi_module = {
 	php_cli_startup,				/* startup */
 	php_module_shutdown_wrapper,	/* shutdown */
 
+	//  请求初始化函数
 	NULL,							/* activate */
+	// 请求收尾处理函数
 	sapi_cli_deactivate,			/* deactivate */
 
+	// 输出数据函数, cli中：fflush(stdout)
 	sapi_cli_ub_write,		    	/* unbuffered write */
 	sapi_cli_flush,				    /* flush */
 	NULL,							/* get uid */
 	NULL,							/* getenv */
 
+	// 错误处理函数
 	php_error,						/* error handler */
 
+	// 调用header()函数的处理handler，cli下是个空函数
 	sapi_cli_header_handler,		/* header handler */
+	// 发送header时的函数
 	sapi_cli_send_headers,			/* send headers handler */
 	sapi_cli_send_header,			/* send header handler */
 
+	// 获取post的函数
 	NULL,				            /* read POST data */
+	// 获取cookie的函数
 	sapi_cli_read_cookies,          /* read Cookies */
 
+	// 向server中注册变量的函数
 	sapi_cli_register_variables,	/* register server variables */
 	sapi_cli_log_message,			/* Log message */
 	NULL,							/* Get request time */
@@ -615,6 +624,7 @@ static int cli_seek_file_begin(zend_file_handle *file_handle, char *script_file,
 	}
 	file_handle->filename = script_file;
 
+	// 忽略shell解释头部
 	/* #!php support */
 	c = fgetc(file_handle->handle.fp);
 	if (c == '#' && (c = fgetc(file_handle->handle.fp)) == '!') {
@@ -936,6 +946,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 			php_optind++;
 		}
 		if (script_file) {
+		    // 使用fopen打开请求的脚本文件
 			if (cli_seek_file_begin(&file_handle, script_file, &lineno) != SUCCESS) {
 				goto err;
 			} else {
@@ -967,6 +978,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 		argv[php_optind-1] = (char*)file_handle.filename;
 		SG(request_info).argv=argv+php_optind-1;
 
+		// request startup 阶段
 		if (php_request_startup()==FAILURE) {
 			*arg_excp = arg_free;
 			fclose(file_handle.handle.fp);
@@ -1392,9 +1404,11 @@ exit_loop:
 #ifndef PHP_CLI_WIN32_NO_CONSOLE
 		if (sapi_module == &cli_sapi_module) {
 #endif
+		    // 调用cli 主要处理逻辑
 			exit_status = do_cli(argc, argv);
 #ifndef PHP_CLI_WIN32_NO_CONSOLE
 		} else {
+		    // php 内置服务器
 			exit_status = do_cli_server(argc, argv);
 		}
 #endif

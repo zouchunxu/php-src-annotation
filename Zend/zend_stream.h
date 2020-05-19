@@ -62,13 +62,13 @@ typedef struct _zend_stream {
 
 typedef struct _zend_file_handle {
 	union {
-		int           fd;
-		FILE          *fp;
-		zend_stream   stream;
+		int           fd; // 文件描述符
+		FILE          *fp; // 文件指针
+		zend_stream   stream; // zend封装的stream
 	} handle;
-	const char        *filename;
+	const char        *filename; // 文件路径
 	zend_string       *opened_path;
-	zend_stream_type  type;
+	zend_stream_type  type; // 文件类型
 	zend_bool free_filename;
 } zend_file_handle;
 
