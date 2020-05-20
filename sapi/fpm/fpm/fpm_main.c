@@ -779,6 +779,7 @@ static int sapi_cgi_deactivate(void) /* {{{ */
 
 static int php_cgi_startup(sapi_module_struct *sapi_module) /* {{{ */
 {
+    // 初始化模块
 	if (php_module_startup(sapi_module, &cgi_module_entry, 1) == FAILURE) {
 		return FAILURE;
 	}
@@ -1594,6 +1595,7 @@ int main(int argc, char *argv[])
 
 	zend_signal_startup();
 
+	// 注册sapi，将全局变量sapi_module设置为cgi_sapi_module
 	sapi_startup(&cgi_sapi_module);
 	cgi_sapi_module.php_ini_path_override = NULL;
 	cgi_sapi_module.php_ini_ignore_cwd = 1;
@@ -1836,6 +1838,7 @@ consult the installation file that came with this distribution, or visit \n\
 	zend_rc_debug = 0;
 #endif
 
+	// 初始化
 	ret = fpm_init(argc, argv, fpm_config ? fpm_config : CGIG(fpm_config), fpm_prefix, fpm_pid, test_conf, php_allow_to_run_as_root, force_daemon, force_stderr);
 
 #if ZEND_RC_DEBUG
