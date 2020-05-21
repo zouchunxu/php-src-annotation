@@ -620,6 +620,7 @@ static zend_op_array *zend_compile(int type)
 	return op_array;
 }
 
+// 解析打开的php文件
 ZEND_API zend_op_array *compile_file(zend_file_handle *file_handle, int type)
 {
 	zend_lex_state original_lex_state;
