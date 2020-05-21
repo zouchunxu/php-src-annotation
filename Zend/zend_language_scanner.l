@@ -164,6 +164,7 @@ static void yy_pop_state(void)
 	zend_stack_del_top(&SCNG(state_stack));
 }
 
+// 设置re2c要扫描的字符串
 static void yy_scan_buffer(char *str, unsigned int len)
 {
 	YYCURSOR       = (YYCTYPE*)str;

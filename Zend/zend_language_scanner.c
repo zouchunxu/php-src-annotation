@@ -630,6 +630,7 @@ ZEND_API zend_op_array *compile_file(zend_file_handle *file_handle, int type)
 	zend_op_array *op_array = NULL;
 	zend_save_lexical_state(&original_lex_state);
 
+	// 解析打开的php文件
 	if (open_file_for_scanning(file_handle)==FAILURE) {
 		if (type==ZEND_REQUIRE) {
 			zend_message_dispatcher(ZMSG_FAILED_REQUIRE_FOPEN, file_handle->filename);
