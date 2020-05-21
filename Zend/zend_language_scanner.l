@@ -1232,6 +1232,7 @@ static void copy_heredoc_label_stack(void *void_heredoc_label)
 		goto skip_token; \
 	} while (0)
 
+// 词法分析
 int ZEND_FASTCALL lex_scan(zval *zendlval, zend_parser_stack_elem *elem)
 {
 int token;
