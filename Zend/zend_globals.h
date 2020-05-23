@@ -263,6 +263,7 @@ typedef enum {
 	ON_STOP
 } zend_php_scanner_event;
 
+// re2c扫描php脚本状态和信息结构体
 struct _zend_php_scanner_globals {
 	zend_file_handle *yy_in;
 	zend_file_handle *yy_out;
@@ -273,7 +274,7 @@ struct _zend_php_scanner_globals {
 	unsigned char *yy_cursor;
 	unsigned char *yy_marker;
 	unsigned char *yy_limit;
-	int yy_state;
+	int yy_state; // 设置当前词法解析状态在哪个语法下
 	zend_stack state_stack;
 	zend_ptr_stack heredoc_label_stack;
 	zend_bool heredoc_scan_ahead;

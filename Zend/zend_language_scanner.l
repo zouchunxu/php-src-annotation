@@ -551,6 +551,7 @@ ZEND_API int open_file_for_scanning(zend_file_handle *file_handle)
 		zend_error_noreturn(E_COMPILE_ERROR, "zend_stream_mmap() failed");
 	}
 
+	// 设置re2c初始状态
 	BEGIN(INITIAL);
 
 	if (file_handle->opened_path) {
