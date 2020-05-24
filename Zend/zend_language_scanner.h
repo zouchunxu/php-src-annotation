@@ -20,6 +20,7 @@
 #ifndef ZEND_SCANNER_H
 #define ZEND_SCANNER_H
 
+// re2c扫描php脚本状态和信息结构体
 typedef struct _zend_lex_state {
 	unsigned int yy_leng;
 	unsigned char *yy_start;
@@ -27,7 +28,7 @@ typedef struct _zend_lex_state {
 	unsigned char *yy_cursor;
 	unsigned char *yy_marker;
 	unsigned char *yy_limit;
-	int yy_state;
+	int yy_state; // 设置当前词法解析状态在哪个语法下
 	zend_stack state_stack;
 	zend_ptr_stack heredoc_label_stack;
 
