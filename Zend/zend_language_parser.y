@@ -260,7 +260,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %type <str> backup_doc_comment
 
 %% /* Rules */
-
+// 语法分析
 start:
 	top_statement_list	{ CG(ast) = $1; }
 ;
