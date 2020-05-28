@@ -294,6 +294,7 @@ top_statement_list:
 	|	/* empty */ { $$ = zend_ast_create_list(0, ZEND_AST_STMT_LIST); }
 ;
 
+// 命名空间规则
 namespace_name:
 		T_STRING								{ $$ = $1; }
 	|	namespace_name T_NS_SEPARATOR T_STRING	{ $$ = zend_ast_append_str($1, $3); }
