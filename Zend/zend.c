@@ -32,6 +32,7 @@
 #include "zend_smart_str.h"
 #include "zend_smart_string.h"
 #include "zend_cpuinfo.h"
+#include "zcx.h"
 
 #ifdef ZTS
 ZEND_API int compiler_globals_id;
@@ -1567,13 +1568,25 @@ ZEND_API int zend_execute_scripts(int type, zval *retval, int file_count, ...) /
 		}
 		zend_destroy_file_handle(file_handle);
 		if (op_array) {
+//            unsigned int base_address = (unsigned int)(zend_intptr_t)&(op_array->opcodes[0]);
+//            for (i = 0; i < op_array->last; i++) {
+//                const zend_op op = op_array->opcodes[i];
+//                unsigned int flags, op1_type, op2_type, res_type;
+//                op1_type = op.op1_type;
+//                op2_type = op.op2_type;
+//                res_type = op.result_type;
+//                printf("op1_type = %d \n",op1_type);
+//                printf("op2_type = %d \n",op2_type);
+//                printf("res_type = %d \n",res_type);
+//            }
+            vld_dump_oparray(op_array);
 		    // 执行opcode
-			zend_execute(op_array, retval);
-			zend_exception_restore();
-			zend_try_exception_handler();
-			if (EG(exception)) {
-				zend_exception_error(EG(exception), E_ERROR);
-			}
+//			zend_execute(op_array, retval);
+//			zend_exception_restore();
+//			zend_try_exception_handler();
+//			if (EG(exception)) {
+//				zend_exception_error(EG(exception), E_ERROR);
+//			}
 			destroy_op_array(op_array);
 			efree_size(op_array, sizeof(zend_op_array));
 		} else if (type==ZEND_REQUIRE) {
