@@ -8178,6 +8178,7 @@ void zend_const_expr_to_zval(zval *result, zend_ast *ast) /* {{{ */
 /* }}} */
 
 /* Same as compile_stmt, but with early binding */
+// 语法树转成opcode CG(zend_lineno)
 void zend_compile_top_stmt(zend_ast *ast) /* {{{ */
 {
 	if (!ast) {
