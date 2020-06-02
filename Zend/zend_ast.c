@@ -436,7 +436,7 @@ static int zend_ast_add_array_element(zval *result, zval *offset, zval *expr)
 	return SUCCESS;
 }
 
-// 生成opcode
+// 递归调用语法树生成opcode
 ZEND_API int ZEND_FASTCALL zend_ast_evaluate(zval *result, zend_ast *ast, zend_class_entry *scope)
 {
 	zval op1, op2;
