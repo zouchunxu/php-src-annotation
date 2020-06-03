@@ -289,8 +289,9 @@ identifier:
 		}
 ;
 
+// 语法树根节点
 top_statement_list:
-		top_statement_list top_statement { $$ = zend_ast_list_add($1, $2); }
+		top_statement_list top_statement { $$ = zend_ast_list_add($1, $2); printf("hello world\n"); }
 	|	/* empty */ { $$ = zend_ast_create_list(0, ZEND_AST_STMT_LIST); }
 ;
 

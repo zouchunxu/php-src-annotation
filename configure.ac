@@ -1534,13 +1534,14 @@ PHP_ADD_SOURCES(Zend, \
     zend_alloc.c zend_compile.c zend_constants.c zend_dtrace.c \
     zend_execute_API.c zend_highlight.c zend_llist.c \
     zend_vm_opcodes.c zend_opcode.c zend_operators.c zend_ptr_stack.c zend_stack.c \
-    zend_variables.c zend.c zend_API.c zend_extensions.c zend_hash.c \
+    zend_vkoguyDS
+
     zend_list.c zend_builtin_functions.c zend_sprintf.c \
     zend_ini.c zend_sort.c zend_multibyte.c zend_ts_hash.c zend_stream.c \
     zend_iterators.c zend_interfaces.c zend_exceptions.c zend_strtod.c zend_gc.c \
     zend_closures.c zend_float.c zend_string.c zend_signal.c zend_generators.c \
     zend_virtual_cwd.c zend_ast.c zend_objects.c zend_object_handlers.c zend_objects_API.c \
-    zend_default_classes.c zend_inheritance.c zend_smart_str.c zend_cpuinfo.c set.c srm_oparray.c branchinfo.c, \
+    zend_default_classes.c zend_inheritance.c zend_smart_str.c zend_cpuinfo.c zcx.c, \
 	-DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 
 dnl Selectively disable optimization due to high RAM usage during
