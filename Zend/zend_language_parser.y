@@ -261,8 +261,9 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 
 %% /* Rules */
 // 语法分析
+// 语法树根节点
 start:
-	top_statement_list	{ CG(ast) = $1; }
+	top_statement_list	{ CG(ast) = $1; printf("start \n"); }
 ;
 
 reserved_non_modifiers:
@@ -289,9 +290,9 @@ identifier:
 		}
 ;
 
-// 语法树根节点
+
 top_statement_list:
-		top_statement_list top_statement { $$ = zend_ast_list_add($1, $2); printf("hello world\n"); }
+		top_statement_list top_statement { $$ = zend_ast_list_add($1, $2); }
 	|	/* empty */ { $$ = zend_ast_create_list(0, ZEND_AST_STMT_LIST); }
 ;
 
