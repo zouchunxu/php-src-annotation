@@ -17,22 +17,27 @@ enum fpm_address_domain {
 };
 
 struct fpm_worker_pool_s {
+    // 指向下一个worker pool
 	struct fpm_worker_pool_s *next;
+	// php-fpm.conf配置: pm/max_children/start_servers.....
 	struct fpm_worker_pool_config_s *config;
 	char *user, *home;									/* for setting env USER and HOME */
 	enum fpm_address_domain listen_address_domain;
+	// 监听的套接字
 	int listening_socket;
 	int set_uid, set_gid;								/* config uid and gid */
 	int socket_uid, socket_gid, socket_mode;
 
 	/* runtime */
 	struct fpm_child_s *children;
+	// 当前pool的worker运行的总数
 	int running_children;
 	int idle_spawn_rate;
 	int warn_max_children;
 #if 0
 	int warn_lq;
 #endif
+	// 记录worker的运行信息，比如空闲/忙碌worker数
 	struct fpm_scoreboard_s *scoreboard;
 	int log_fd;
 	char **limit_extensions;
