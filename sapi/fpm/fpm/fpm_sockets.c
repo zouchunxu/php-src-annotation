@@ -369,6 +369,7 @@ static int fpm_socket_af_unix_listening_socket(struct fpm_worker_pool_s *wp) /* 
 }
 /* }}} */
 
+// 初始化socket
 int fpm_sockets_init_main() /* {{{ */
 {
 	unsigned i, lq_len;

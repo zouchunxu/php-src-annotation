@@ -52,10 +52,14 @@ extern struct fpm_global_config_s fpm_global_config;
  * Please keep the same order as in fpm_conf.c and in php-fpm.conf.in
  */
 struct fpm_worker_pool_config_s {
+    // pool 名称
 	char *name;
 	char *prefix;
+	// fpm 的启动用户
 	char *user;
+	// fpm的启动用户组
 	char *group;
+	// 监听地址，配置：listen
 	char *listen_address;
 	int listen_backlog;
 	/* Using chown */
@@ -65,12 +69,19 @@ struct fpm_worker_pool_config_s {
 	char *listen_allowed_clients;
 	int process_priority;
 	int process_dumpable;
+	// 进程模型: static/dynamic/ondemand
 	int pm;
+	// 最大worker进程数
 	int pm_max_children;
+	// 启动初始化的worker数
 	int pm_start_servers;
+	// 最小空闲worker数
 	int pm_min_spare_servers;
+	// 最大空闲worker数
 	int pm_max_spare_servers;
+	// worker空闲时间
 	int pm_process_idle_timeout;
+	// worker处理的最大请求数
 	int pm_max_requests;
 	char *pm_status_path;
 	char *ping_path;

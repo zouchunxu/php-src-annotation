@@ -19,7 +19,7 @@ static int fpm_scoreboard_i = -1;
 static float fpm_scoreboard_tick;
 #endif
 
-
+// 初始化worker进程运行信息的结构,分配在共享内存中,master进程通过这种方式获取worker的运行信息
 int fpm_scoreboard_init_main() /* {{{ */
 {
 	struct fpm_worker_pool_s *wp;

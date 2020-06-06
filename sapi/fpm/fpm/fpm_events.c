@@ -316,6 +316,7 @@ int fpm_event_support_edge_trigger() /* {{{ */
 }
 /* }}} */
 
+// master 事件管理
 int fpm_event_init_main() /* {{{ */
 {
 	struct fpm_worker_pool_s *wp;

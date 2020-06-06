@@ -1782,6 +1782,7 @@ int main(int argc, char *argv[])
 	cgi_sapi_module.executable_location = argv[0];
 
 	/* startup after we get the above ini override se we get things right */
+	// 执行php_module_startup()
 	if (cgi_sapi_module.startup(&cgi_sapi_module) == FAILURE) {
 #ifdef ZTS
 		tsrm_shutdown();
@@ -1864,6 +1865,7 @@ consult the installation file that came with this distribution, or visit \n\
 	}
 	fpm_is_running = 1;
 
+	//后面都是worker进程的操作，master不会走到下面
 	fcgi_fd = fpm_run(&max_requests);
 	parent = 0;
 
