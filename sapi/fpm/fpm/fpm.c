@@ -93,12 +93,15 @@ int fpm_run(int *max_requests) /* {{{ */
 	struct fpm_worker_pool_s *wp;
 
 	/* create initial children in all pools */
+	// 编辑worker pool
 	for (wp = fpm_worker_all_pools; wp; wp = wp->next) {
 		int is_parent;
 
+		// fork子进程
 		is_parent = fpm_children_create_initial(wp);
 
 		if (!is_parent) {
+		    // 子进程会走到这里
 			goto run_child;
 		}
 
@@ -110,6 +113,7 @@ int fpm_run(int *max_requests) /* {{{ */
 	}
 
 	/* run event loop forever */
+	// 里面有个while(1) 父进程会一直停在里面
 	fpm_event_loop(0);
 
 run_child: /* only workers reach this point */

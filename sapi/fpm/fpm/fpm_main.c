@@ -1877,9 +1877,11 @@ consult the installation file that came with this distribution, or visit \n\
 	php_import_environment_variables = cgi_php_import_environment_variables;
 
 	/* library is already initialized, now init our request */
+	// 初始化factcgi请求
 	request = fpm_init_request(fcgi_fd);
 
 	zend_first_try {
+	    // worker进程等待请求
 		while (EXPECTED(fcgi_accept_request(request) >= 0)) {
 			char *primary_script = NULL;
 			request_body_fd = -1;
@@ -1890,6 +1892,7 @@ consult the installation file that came with this distribution, or visit \n\
 
 			/* request startup only after we've done all we can to
 			 *            get path_translated */
+			// 请求开始，调用各个扩展的钩子函数
 			if (UNEXPECTED(php_request_startup() == FAILURE)) {
 				fcgi_finish_request(request, 1);
 				SG(server_context) = NULL;
@@ -1952,6 +1955,7 @@ consult the installation file that came with this distribution, or visit \n\
 
 			fpm_request_executing();
 
+			// 编译/执行PHP脚本
 			php_execute_script(&file_handle);
 
 fastcgi_request_done:
@@ -2006,6 +2010,7 @@ fastcgi_request_done:
 out:
 
 	SG(server_context) = NULL;
+	// worker进程退出，进入module shutdown阶段
 	php_module_shutdown();
 
 	if (parent) {

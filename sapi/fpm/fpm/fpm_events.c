@@ -364,7 +364,9 @@ void fpm_event_loop(int err) /* {{{ */
 		return;
 	}
 
+	// 设置监听到fd，事件触发类型及回调函数
 	fpm_event_set(&signal_fd_event, fpm_signals_get_fd(), FPM_EV_READ, &fpm_got_signal, NULL);
+	// 注册事件
 	fpm_event_add(&signal_fd_event, 0);
 
 	/* add timers */
@@ -372,7 +374,8 @@ void fpm_event_loop(int err) /* {{{ */
 		fpm_pctl_heartbeat(NULL, 0, NULL);
 	}
 
-	if (!err) {
+	if (!err) { // err = 0
+	    // 注册定时器
 		fpm_pctl_perform_idle_server_maintenance_heartbeat(NULL, 0, NULL);
 
 		zlog(ZLOG_DEBUG, "%zu bytes have been reserved in SHM", fpm_shm_get_size_allocated());
@@ -383,6 +386,7 @@ void fpm_event_loop(int err) /* {{{ */
 #endif
 	}
 
+	// 进入循环，master进程才会进入到这里
 	while (1) {
 		struct fpm_event_queue_s *q, *q2;
 		struct timeval ms;
@@ -420,6 +424,7 @@ void fpm_event_loop(int err) /* {{{ */
 			timeout = (tmp.tv_sec * 1000) + (tmp.tv_usec / 1000) + 1;
 		}
 
+		// 等待IO事件
 		ret = module->wait(fpm_event_queue_fd, timeout);
 
 		/* is a child, nothing to do here */
@@ -432,6 +437,7 @@ void fpm_event_loop(int err) /* {{{ */
 		}
 
 		/* trigger timers */
+		// 定时器事件
 		q = fpm_event_queue_timer;
 		while (q) {
 			fpm_clock_get(&now);

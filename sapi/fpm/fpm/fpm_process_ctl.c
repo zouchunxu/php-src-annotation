@@ -363,6 +363,7 @@ static void fpm_pctl_perform_idle_server_maintenance(struct timeval *now) /* {{{
 
 			fpm_request_last_activity(last_idle_child, &last);
 			fpm_clock_get(&now);
+			// 如果空闲时间最长到worker空闲时间超过了process_idle_timeout则杀掉该worker
 			if (last.tv_sec < now.tv_sec - wp->config->pm_process_idle_timeout) {
 				last_idle_child->idle_kill = 1;
 				fpm_pctl_kill(last_idle_child->pid, FPM_PCTL_QUIT);
