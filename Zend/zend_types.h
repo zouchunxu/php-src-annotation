@@ -160,18 +160,30 @@ typedef uintptr_t zend_type;
 	ZEND_TYPE_ENCODE_CLASS_CONST_Q1(allow_null, class_name)
 
 typedef union _zend_value {
+    // 整数  长整形
 	zend_long         lval;				/* long value */
+	// 浮点 php的float和double都是c中double形
 	double            dval;				/* double value */
 	zend_refcounted  *counted;
+	// 字符串
 	zend_string      *str;
+	// 数组
 	zend_array       *arr;
+	// 对象
 	zend_object      *obj;
+	// 资源
 	zend_resource    *res;
+	// 引用
 	zend_reference   *ref;
+	// 语法树
 	zend_ast_ref     *ast;
+	// zval 指针
 	zval             *zv;
+	// 指针
 	void             *ptr;
+	// 类
 	zend_class_entry *ce;
+	// 函数
 	zend_function    *func;
 	struct {
 		uint32_t w1;
@@ -180,11 +192,14 @@ typedef union _zend_value {
 } zend_value;
 
 struct _zval_struct {
+    // 变量值
 	zend_value        value;			/* value */
 	union {
 		struct {
 			ZEND_ENDIAN_LOHI_3(
+                // 变量类型
 				zend_uchar    type,			/* active type */
+				// 类型标记
 				zend_uchar    type_flags,
 				union {
 					uint16_t  call_info;    /* call info for EX(This) */
@@ -219,19 +234,26 @@ struct _zend_refcounted {
 	zend_refcounted_h gc;
 };
 
+// 分配方式:malloc(sizeof(struct _zend_string) + 字符串长度)
 struct _zend_string {
-	zend_refcounted_h gc;
+	zend_refcounted_h gc; // 引用计数， 垃圾回收用到
 	zend_ulong        h;                /* hash value */
+	// 字符串长度
 	size_t            len;
+	// 内容地址
 	char              val[1];
 };
 
 typedef struct _Bucket {
+    // 存储的值
 	zval              val;
+	//哈希值
 	zend_ulong        h;                /* hash value (or numeric index)   */
+	// 字符串key的值
 	zend_string      *key;              /* string key or NULL for numerics */
 } Bucket;
 
+// zend_array == HashTable
 typedef struct _zend_array HashTable;
 
 struct _zend_array {
@@ -246,12 +268,18 @@ struct _zend_array {
 		} v;
 		uint32_t flags;
 	} u;
+	// hash时用到 = -nTableSize
 	uint32_t          nTableMask;
+	// 存储元素数组，arData指向首地址
 	Bucket           *arData;
+	// 已经使用bucket数
 	uint32_t          nNumUsed;
+	// 实际存储数量
 	uint32_t          nNumOfElements;
+	// hash表总大小
 	uint32_t          nTableSize;
 	uint32_t          nInternalPointer;
+    // 下一个可用数值索引
 	zend_long         nNextFreeElement;
 	dtor_func_t       pDestructor;
 };
